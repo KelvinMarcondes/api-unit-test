@@ -1,9 +1,11 @@
 package com.kelvinmarcondes.apiunittest.services.impl;
 
 import com.kelvinmarcondes.apiunittest.domain.User;
+import com.kelvinmarcondes.apiunittest.domain.dto.UserDTO;
 import com.kelvinmarcondes.apiunittest.repositories.UserRepository;
 import com.kelvinmarcondes.apiunittest.services.UserService;
 import com.kelvinmarcondes.apiunittest.services.exceptions.ObjectNotFoundException;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +18,9 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private UserRepository repository;
 
+    @Autowired
+    private ModelMapper mapper;
+
 
     @Override
     public User findById(Integer id) {
@@ -25,5 +30,10 @@ public class UserServiceImpl implements UserService {
 
     public List<User> findAll(){
         return repository.findAll();
+    }
+
+    @Override
+    public User create(UserDTO obj) {
+        return repository.save(mapper.map(obj, User.class));
     }
 }
