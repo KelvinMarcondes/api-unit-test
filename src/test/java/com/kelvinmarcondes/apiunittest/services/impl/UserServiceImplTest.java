@@ -3,6 +3,7 @@ package com.kelvinmarcondes.apiunittest.services.impl;
 import com.kelvinmarcondes.apiunittest.domain.User;
 import com.kelvinmarcondes.apiunittest.domain.dto.UserDTO;
 import com.kelvinmarcondes.apiunittest.repositories.UserRepository;
+import com.kelvinmarcondes.apiunittest.services.exceptions.ObjectNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -57,12 +58,25 @@ class UserServiceImplTest {
 
         assertNotNull(response);
 
-        assertEquals(response.getClass(), User.class);
-        assertEquals(response.getId(), ID);
-        assertEquals(response.getEmail(), EMAIL);
-        assertEquals(response.getName(), NAME);
-
+        assertEquals(User.class, response.getClass());
+        assertEquals(ID, response.getId());
+        assertEquals(EMAIL, response.getEmail());
+        assertEquals(NAME, response.getName());
     }
+
+
+    @Test
+    void whenFindByIDThenReturnAnObjectNotFoundException(){
+        when(repository.findById(anyInt())).thenThrow(new ObjectNotFoundException("Objeto não encontrado"));
+
+        try{
+            service.findById(ID);
+        }catch (Exception ex){
+            assertEquals(ObjectNotFoundException.class, ex.getClass());
+            assertEquals("Objeto não encontrado", ex.getMessage());
+        }
+    }
+
 
     @Test
     void findAll() {
